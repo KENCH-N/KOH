@@ -7,3 +7,5 @@ function main() {
         document.body.appendChild(para);
     });
 }
+
+main();
