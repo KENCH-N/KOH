@@ -1,6 +1,6 @@
 function main() {
     document.getElementById('enterButton').addEventListener('click', function() {
-        const paragraph = document.querySelector('#app p');
+        const paragraph = document.querySelector('p');
         const button = document.getElementById('enterButton');
         
         // Add fade-out animation
