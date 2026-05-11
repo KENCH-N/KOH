@@ -16,24 +16,28 @@ body {
     overflow-x: hidden;
 }
 
+.gone {
+    opacity: 0;
+}
+
 /* Fade-in animation on page load */
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(20px);
     }
     to {
         opacity: 1;
-        transform: translateY(0);
     }
 }
 
 @keyframes fadeOut {
     from {
         opacity: 1;
+        transform: translateY(0);
     }
     to {
         opacity: 0;
+        transform: translateY(-20px);
     }
 }
 
@@ -78,7 +82,6 @@ p {
     font-weight: 300;
     line-height: 1.6;
     margin-bottom: 32px;
-    animation: fadeIn 1s ease-out 0.2s both;
     letter-spacing: 0.3px;
 }
 
@@ -114,20 +117,4 @@ button:active {
 button:focus {
     outline: none;
     box-shadow: 0 0 0 3px rgba(51, 51, 51, 0.1);
-}
-
-/* Fade-out animation */
-@keyframes fadeOut {
-    from {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    to {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-}
-
-.fade-out {
-    animation: fadeOut 0.6s ease-out forwards;
 }
