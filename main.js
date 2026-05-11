@@ -8,7 +8,16 @@ function main() {
         // Remove button after animation completes
         setTimeout(() => {
             button.remove();
+            route1();
         }, 600); // Match the animation duration
     });
 }
+
+function route1() {
+    var p1 = document.getElementById("p1");
+    p1.innerText = "Hello";
+    p1.offsetHeight; // force reflow
+    p1.classList.add('fade-in');
+}
+
 main();
