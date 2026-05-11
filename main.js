@@ -1,3 +1,9 @@
 const para = document.createElement("p");
-para.innerHTML = "Hello World!";
-document.body.appendChild(para);
+
+function main() {
+    document.getElementById("enterButton").addEventListener("click", function() {
+        // Handle button click event
+        para.innerHTML = "Button Clicked!";
+        document.body.appendChild(para);
+    });
+}
