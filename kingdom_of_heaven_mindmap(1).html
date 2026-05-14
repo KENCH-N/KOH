@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kingdom of Heaven — Mind Map</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #ffffff;
+    color: #1a1a1a;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── START SCREEN ── */
+  #start-screen {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    background: #ffffff;
+  }
+
+  .start-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #aaa;
+    margin-bottom: 18px;
+    text-align: center;
+  }
+
+  .start-title {
+    font-size: 38px;
+    font-weight: 700;
+    color: #111;
+    text-align: center;
+    line-height: 1.15;
+    margin-bottom: 12px;
+    letter-spacing: -0.03em;
+  }
+
+  .start-subtitle {
+    font-size: 15px;
+    color: #777;
+    text-align: center;
+    margin-bottom: 44px;
+    max-width: 400px;
+    line-height: 1.65;
+  }
+
+  .start-layers {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 460px;
+    margin-bottom: 36px;
+  }
+
+  .start-layer {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1px solid;
+  }
+
+  .start-layer-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+    font-weight: 700;
+  }
+
+  .sl-cmd { background: #fff5f0; border-color: #f0c4a8; }
+  .sl-cmd .start-layer-icon { background: #fde0c8; color: #bf4a10; }
+  .sl-cmd .sl-label { color: #a03810; }
+  .sl-cmd .sl-desc  { color: #c07050; }
+
+  .sl-ser { background: #f0f6ff; border-color: #b0cef0; }
+  .sl-ser .start-layer-icon { background: #d8eaf8; color: #1458a8; }
+  .sl-ser .sl-label { color: #1050a0; }
+  .sl-ser .sl-desc  { color: #4070b0; }
+
+  .sl-ori { background: #f0fbf4; border-color: #a0d8b0; }
+  .sl-ori .start-layer-icon { background: #ccf0d8; color: #147830; }
+  .sl-ori .sl-label { color: #106028; }
+  .sl-ori .sl-desc  { color: #309050; }
+
+  .sl-label { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+  .sl-desc  { font-size: 12px; line-height: 1.5; }
+
+  .start-divider {
+    width: 100%;
+    max-width: 460px;
+    height: 1px;
+    background: #f0f0f0;
+    margin-bottom: 32px;
+  }
+
+  .start-btn {
+    background: #111;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 15px 52px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: -0.01em;
+    transition: background 0.15s, transform 0.1s;
+  }
+  .start-btn:hover { background: #333; }
+  .start-btn:active { transform: scale(0.98); }
+
+  .start-hint {
+    margin-top: 12px;
+    font-size: 11px;
+    color: #ccc;
+    text-align: center;
+  }
+
+  /* ── MAP SCREEN ── */
+  #map-screen { display: none; }
+
+  #top-bar {
+    padding: 13px 24px;
+    border-bottom: 1px solid #ebebeb;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    background: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  #top-bar h1 { font-size: 14px; font-weight: 700; color: #111; letter-spacing: -0.01em; }
+  #top-bar p  { font-size: 11px; color: #aaa; margin-top: 1px; }
+
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #888; }
+
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+  #back-btn {
+    font-size: 12px; color: #888; background: none;
+    border: 1px solid #ddd; border-radius: 6px;
+    padding: 5px 12px; cursor: pointer; font-family: inherit;
+    transition: background 0.12s, color 0.12s;
+  }
+  #back-btn:hover { background: #f5f5f5; color: #333; }
+
+  #canvas-wrap {
+    width: 100%; overflow: auto;
+    padding: 40px 20px 60px;
+    min-height: calc(100vh - 70px);
+    display: flex; justify-content: center; align-items: flex-start;
+  }
+
+  #map {
+    position: relative;
+    width: 920px;
+    min-height: 880px;
+    flex-shrink: 0;
+  }
+
+  svg#lines {
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none; overflow: visible;
+  }
+
+  .node {
+    position: absolute; border-radius: 10px;
+    padding: 10px 14px; cursor: pointer; border: 1px solid;
+    transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+    user-select: none;
+  }
+  .node:hover { transform: scale(1.03); box-shadow: 0 3px 14px rgba(0,0,0,0.09); }
+  .node:active { transform: scale(0.98); }
+
+  .node-badge {
+    font-size: 9px; font-weight: 700; letter-spacing: 0.05em;
+    text-transform: uppercase; margin-bottom: 5px;
+  }
+  .node-title { font-size: 12px; font-weight: 700; line-height: 1.35; margin-bottom: 2px; }
+  .node-sub   { font-size: 10px; line-height: 1.4; }
+
+  .center {
+    border-radius: 14px; padding: 18px 22px; text-align: center;
+    z-index: 5; background: #fffdf5; border: 2px solid #d4a840 !important;
+    cursor: default; box-shadow: 0 2px 16px rgba(180,140,40,0.12);
+  }
+  .center:hover { transform: none; box-shadow: 0 2px 16px rgba(180,140,40,0.12); }
+  .center .node-title { font-size: 16px; font-weight: 800; color: #111; margin-bottom: 4px; }
+  .center .node-sub   { font-size: 11px; color: #a08030; }
+
+  .n-cmd { background: #fff8f4; border-color: #f0b490; color: #7a2a08; }
+  .n-cmd .node-badge { color: #bf4a10; }
+  .n-cmd .node-sub   { color: #aa6030; }
+  .n-cmd:hover { border-color: #c86030; }
+
+  .n-ser { background: #f4f8ff; border-color: #90c0f0; color: #0a3060; }
+  .n-ser .node-badge { color: #1458a8; }
+  .n-ser .node-sub   { color: #306898; }
+  .n-ser:hover { border-color: #2070c8; }
+
+  .n-ori { background: #f4fbf6; border-color: #80cc98; color: #0a3c18; }
+  .n-ori .node-badge { color: #147030; }
+  .n-ori .node-sub   { color: #287040; }
+  .n-ori:hover { border-color: #209848; }
+
+  .section-label {
+    position: absolute; font-size: 10px; font-weight: 700;
+    letter-spacing: 0.09em; text-transform: uppercase; pointer-events: none;
+  }
+
+  /* ── PANEL ── */
+  .panel-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.3); z-index: 100;
+    align-items: center; justify-content: center; padding: 24px;
+  }
+  .panel-overlay.open { display: flex; }
+
+  .panel-box {
+    background: #fff; border: 1px solid #e8e8e8;
+    border-radius: 16px; padding: 28px 30px 26px;
+    max-width: 440px; width: 100%; position: relative;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.13);
+  }
+
+  .panel-badge {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 3px 10px; border-radius: 99px;
+    display: inline-block; margin-bottom: 12px;
+  }
+  .pb-cmd { background: #fff0e8; color: #b84010; border: 1px solid #f0a880; }
+  .pb-ser { background: #e8f0ff; color: #1050a0; border: 1px solid #88b8f0; }
+  .pb-ori { background: #e8f8ec; color: #106028; border: 1px solid #78c890; }
+
+  .panel-title {
+    font-size: 18px; font-weight: 800; color: #111;
+    margin-bottom: 10px; line-height: 1.3;
+  }
+
+  .panel-scenario {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: #ccc; margin-bottom: 6px; margin-top: 16px;
+  }
+
+  .panel-body { font-size: 13px; line-height: 1.75; color: #555; }
+  .panel-body em { color: #222; font-style: italic; }
+
+  .panel-close {
+    position: absolute; top: 14px; right: 16px;
+    background: none; border: 1px solid #e8e8e8; border-radius: 6px;
+    color: #bbb; font-size: 12px; cursor: pointer;
+    padding: 4px 10px; font-family: inherit;
+    transition: background 0.12s, color 0.12s;
+  }
+  .panel-close:hover { background: #f5f5f5; color: #555; }
+
+  .fade-in { animation: fadeIn 0.35s ease both; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+</style>
+</head>
+<body>
+
+<!-- START SCREEN -->
+<div id="start-screen">
+  <p class="start-eyebrow">Religion Assignment &middot; Matthew 5–7</p>
+  <h1 class="start-title">Finding the<br>Kingdom of Heaven</h1>
+  <p class="start-subtitle">A navigational mind map through three layers of wisdom — guiding you through modern life toward the Kingdom of Heaven.</p>
+
+  <div class="start-layers">
+    <div class="start-layer sl-cmd">
+      <div class="start-layer-icon">&#9736;</div>
+      <div>
+        <div class="sl-label">10 Commandments</div>
+        <div class="sl-desc">3 guardrails against AI cheating, deepfake fraud, and autonomous weapons.</div>
+      </div>
+    </div>
+    <div class="start-layer sl-ser">
+      <div class="start-layer-icon">&#9654;</div>
+      <div>
+        <div class="sl-label">Sermon on the Mount</div>
+        <div class="sl-desc">5 teachings of Jesus — each paired with a real scenario from student life today.</div>
+      </div>
+    </div>
+    <div class="start-layer sl-ori">
+      <div class="start-layer-icon">&#9733;</div>
+      <div>
+        <div class="sl-label">Original Teachings</div>
+        <div class="sl-desc">3 personal teachings on ignoring doubt, respecting strangers online, and unplugging.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="start-divider"></div>
+
+  <button class="start-btn" onclick="enterMap()">Explore the mind map &rarr;</button>
+  <p class="start-hint">Click any node to read the full explanation</p>
+</div>
+
+<!-- MAP SCREEN -->
+<div id="map-screen">
+  <div id="top-bar">
+    <div>
+      <h1>Finding the Kingdom of Heaven</h1>
+      <p>Matthew 5–7 &mdash; Click any node to explore</p>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#c85020"></div>10 Commandments</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#1860b0"></div>Sermon on the Mount</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#18a040"></div>Original Teachings</div>
+      <button id="back-btn" onclick="goBack()">&#8592; Back</button>
+    </div>
+  </div>
+
+  <div id="canvas-wrap">
+    <div id="map">
+      <svg id="lines"></svg>
+      <div class="section-label" style="left:8px;top:52px;color:#bf4a10;">10 Commandments</div>
+      <div class="section-label" style="right:8px;top:52px;color:#1458a8;text-align:right;width:190px;">Sermon on the Mount</div>
+      <div class="section-label" style="left:50%;bottom:16px;transform:translateX(-50%);color:#157030;">Original Teachings</div>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL PANEL -->
+<div class="panel-overlay" id="panel" onclick="handleOverlayClick(event)">
+  <div class="panel-box">
+    <button class="panel-close" onclick="closePanel()">&#x2715; close</button>
+    <div class="panel-badge" id="pb"></div>
+    <div class="panel-title" id="pt"></div>
+    <div id="pb2"></div>
+  </div>
+</div>
+
+<script>
+const nodes = [
+  { id:'center', type:'center', x:385, y:300, w:150, h:72,
+    title:'Kingdom of Heaven', sub:'Matthew 5–7' },
+
+  { id:'cmd1', type:'cmd', x:20, y:88,  w:182, h:90,
+    badge:'You shall not covet', title:'AI cheating culture',
+    sub:'Wanting grades without effort — LLMs used as shortcuts',
+    detail:{ label:'Commandment — Guardrail', scenario:'The scene',
+      body:`Since AI like ChatGPT entered schools, students use it to skip the work while coveting the grade. The Bible warns: <em>"Dishonest money dwindles away; whoever gathers little by little makes it grow"</em> (Proverbs 13:11).\n\nCheating with AI is like that dishonest money — it works until the moment it doesn't. The student who lets AI think for them will one day face an exam, a job interview, a real problem — and find nothing underneath.`}},
+
+  { id:'cmd2', type:'cmd', x:20, y:230, w:182, h:90,
+    badge:'You shall not lie', title:'AI deepfakes & fraud',
+    sub:'$40B in estimated losses by 2027 — voices nearly indistinguishable',
+    detail:{ label:'Commandment — Guardrail', scenario:'The scene',
+      body:`AI deepfake images and voice clones are used to scam individuals and businesses. A UC Berkeley researcher notes that AI voices will soon be nearly indistinguishable on phone calls — where most fraud occurs.\n\nThis commandment, followed seriously, drives the demand for stricter regulation of synthetic media and protects the most vulnerable from being deceived.`}},
+
+  { id:'cmd3', type:'cmd', x:20, y:372, w:182, h:90,
+    badge:'You shall not murder', title:'AI autonomous weapons',
+    sub:'Anthropic refused a $200M U.S. military contract',
+    detail:{ label:'Commandment — Guardrail', scenario:'The scene',
+      body:`The U.S. military has pushed to integrate AI into warfare. Anthropic drew a moral line — refusing a $200 million government contract that would have involved autonomous weapons capable of taking lives.\n\nThis commandment marks the absolute boundary where technology must not go. AI that kills without human judgment is the clearest modern violation of "You shall not murder."`}},
+
+  { id:'ser1', type:'ser', x:718, y:60,  w:190, h:90,
+    badge:'The Golden Rule', title:'ICE deportations',
+    sub:'Policies built without empathy for those targeted',
+    detail:{ label:'Sermon on the Mount', scenario:'Real-world scenario',
+      body:`Immigration enforcement targets Latin American minorities — sometimes deporting full U.S. citizens. These policies were not built with the Golden Rule in mind.\n\nScenario: Imagine your family being separated and removed from the only country you've ever known. Would you still support the same policy? <em>"Do to others what you would have them do to you."</em> — Matthew 7:12`}},
+
+  { id:'ser2', type:'ser', x:718, y:192, w:190, h:90,
+    badge:'Concerning retaliation', title:'"Alpha" influencer culture',
+    sub:'Young men taught to always hit back harder',
+    detail:{ label:'Sermon on the Mount', scenario:'Real-world scenario',
+      body:`Male influencers online preach that not retaliating is weakness — "when you get hit, hit back harder." This is directly against the Sermon on the Mount.\n\nScenario: Someone disrespects you publicly at school. The pressure to escalate is enormous. Jesus says the stronger path — the harder one — is choosing your response rather than letting their words decide it for you.`}},
+
+  { id:'ser3', type:'ser', x:718, y:324, w:190, h:90,
+    badge:'Judging others', title:'Disability mockery on Instagram',
+    sub:'Reels mocking disabled people reach millions of views',
+    detail:{ label:'Sermon on the Mount', scenario:'Real-world scenario',
+      body:`Instagram and TikTok push "humorous" content that mocks people with disabilities — normalizing a disturbing form of judgment disguised as comedy.\n\nScenario: A reel appears on your feed laughing at someone's condition. Sharing it feels harmless. Jesus warns: <em>"Do not judge, or you too will be judged."</em> Every share is a vote for the world you want to live in.`}},
+
+  { id:'ser4', type:'ser', x:718, y:456, w:190, h:90,
+    badge:'Treasure & worry', title:'Influencer wealth obsession',
+    sub:'Loans taken out to flaunt luxury — a twisted idea of success',
+    detail:{ label:'Sermon on the Mount', scenario:'Real-world scenario',
+      body:`Social media floods young people with images of influencers flaunting cars, clothes, and watches — creating the false belief that visible wealth is success.\n\nScenario: $350 sneakers sit in a store window. Three influencers wore them this week. You feel inadequate without them. Jesus: <em>"Do not store up treasures on earth... but store up treasures in heaven."</em> The things you don't buy cannot imprison you.`}},
+
+  { id:'ser5', type:'ser', x:718, y:588, w:190, h:90,
+    badge:'Hearers & doers', title:'Academic advice ignored',
+    sub:'Receiving every tool for success and choosing not to act',
+    detail:{ label:'Sermon on the Mount', scenario:'Real-world scenario',
+      body:`Teachers give students every resource to succeed. Some act on it; many don't — and the consequences are real.\n\nScenario: You receive the exact guidance needed to pass a course. You nod, and do nothing. Jesus says the wise person builds on rock by <em>doing</em> what they hear — not just listening. The difference between success and failure is almost always execution, not information.`}},
+
+  { id:'ori1', type:'ori', x:80,  y:720, w:205, h:90,
+    badge:'Original teaching 1', title:"Ignore the \"it's too late\" voice",
+    sub:'Faith has no expiry date — the window is always open',
+    detail:{ label:'Original Teaching', scenario:'How it changes the world',
+      body:`There is a voice that whispers you've missed the window — to convert, to start, to show up after you're already late. That voice is a "little devil on your shoulder."\n\nMany believe Catholicism must be inherited at birth — that conversion later is embarrassing. But God has no expiry date on welcome. Showing up to basketball practice late matters far less than not showing up at all. <em>Act anyway.</em> Ignoring that voice is how faith begins for many people.`}},
+
+  { id:'ori2', type:'ori', x:357, y:720, w:205, h:90,
+    badge:'Original teaching 2', title:'Respect the anonymous neighbour',
+    sub:'Cyberbullying victims are 2× more likely to take their lives',
+    detail:{ label:'Original Teaching', scenario:'How it changes the world',
+      body:`Technology hides identity — making cruelty easier and more common. Cyberbullying is rampant because saying harmful things online feels consequence-free.\n\nResearch shows victims of cyberbullying are twice as likely to take their own lives than non-bullied individuals. One comment can end a life you'll never know you touched.\n\nLoving thy neighbour doesn't begin with knowing their name. It begins with acknowledging that they exist. This teaching — taken seriously — could save lives today.`}},
+
+  { id:'ori3', type:'ori', x:634, y:720, w:205, h:90,
+    badge:'Original teaching 3', title:'Learn to separate from the screen',
+    sub:'8 hrs/day average — tied to depression & lowered social skills',
+    detail:{ label:'Original Teaching', scenario:'How it changes the world',
+      body:`Teenagers now average 8 hours of screen time per day. Studies show this lowers social skills and increases the likelihood of depression.\n\nThe screen traps us in a dopamine loop — pulling us away from the physical world where God is most tangibly felt. Breaking away — playing sports, time with friends, sitting in silence — is a spiritual act.\n\n<em>The real world is where community, service, and faith are lived, not watched.</em> Every hour away from the screen is an hour returned to the world God made.`}},
+];
+
+const typeColors = { cmd:'#d06030', ser:'#2070c8', ori:'#20a040' };
+
+function buildMap() {
+  const map = document.getElementById('map');
+  const svg = document.getElementById('lines');
+  svg.innerHTML = '';
+  map.querySelectorAll('.node').forEach(el => el.remove());
+
+  const center = nodes.find(n => n.id === 'center');
+  const CX = center.x + center.w / 2;
+  const CY = center.y + center.h / 2;
+
+  let mapH = 0;
+  nodes.forEach(n => { mapH = Math.max(mapH, n.y + n.h + 40); });
+  map.style.minHeight = mapH + 'px';
+
+  nodes.forEach(n => {
+    const el = document.createElement('div');
+    el.className = 'node n-' + n.type + (n.type === 'center' ? ' center' : '');
+    el.style.cssText = `left:${n.x}px;top:${n.y}px;width:${n.w}px;min-height:${n.h}px;`;
+    let inner = '';
+    if (n.badge) inner += `<div class="node-badge">${n.badge}</div>`;
+    inner += `<div class="node-title">${n.title}</div>`;
+    if (n.sub) inner += `<div class="node-sub">${n.sub}</div>`;
+    el.innerHTML = inner;
+    if (n.detail) el.onclick = () => openPanel(n);
+    map.appendChild(el);
+
+    if (n.type === 'center') return;
+    const nx = n.x + n.w / 2;
+    const ny = n.y + n.h / 2;
+    const color = typeColors[n.type];
+    let d;
+    if (n.type === 'cmd') {
+      const midX = nx + (CX - nx) * 0.5;
+      d = `M ${nx} ${ny} C ${midX} ${ny}, ${midX} ${CY}, ${CX} ${CY}`;
+    } else if (n.type === 'ser') {
+      const midX = CX + (nx - CX) * 0.5;
+      d = `M ${CX} ${CY} C ${midX} ${CY}, ${midX} ${ny}, ${nx} ${ny}`;
+    } else {
+      const midY = ny + (CY - ny) * 0.5;
+      d = `M ${nx} ${ny} C ${nx} ${midY}, ${CX} ${midY}, ${CX} ${CY}`;
+    }
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', d);
+    path.setAttribute('stroke', color);
+    path.setAttribute('stroke-width', '1.5');
+    path.setAttribute('fill', 'none');
+    path.setAttribute('opacity', '0.35');
+    path.setAttribute('stroke-dasharray', '5 4');
+    svg.appendChild(path);
+  });
+}
+
+function enterMap() {
+  document.getElementById('start-screen').style.display = 'none';
+  const ms = document.getElementById('map-screen');
+  ms.style.display = 'block';
+  ms.classList.add('fade-in');
+  buildMap();
+  applyScale();
+}
+
+function goBack() {
+  document.getElementById('map-screen').style.display = 'none';
+  const ss = document.getElementById('start-screen');
+  ss.style.display = 'flex';
+  ss.classList.add('fade-in');
+}
+
+function openPanel(n) {
+  const d = n.detail;
+  const cls = { cmd:'pb-cmd', ser:'pb-ser', ori:'pb-ori' }[n.type] || '';
+  const pb = document.getElementById('pb');
+  pb.textContent = d.label;
+  pb.className = 'panel-badge ' + cls;
+  document.getElementById('pt').textContent = n.title;
+  let html = '';
+  if (d.scenario) html += `<div class="panel-scenario">${d.scenario}</div>`;
+  html += `<div class="panel-body">${d.body.replace(/\n/g,'<br><br>')}</div>`;
+  document.getElementById('pb2').innerHTML = html;
+  document.getElementById('panel').classList.add('open');
+}
+
+function closePanel() { document.getElementById('panel').classList.remove('open'); }
+function handleOverlayClick(e) { if (e.target === document.getElementById('panel')) closePanel(); }
+
+function applyScale() {
+  const map = document.getElementById('map');
+  const wrap = document.getElementById('canvas-wrap');
+  if (!wrap) return;
+  const scale = Math.min(1, (wrap.clientWidth - 40) / 920);
+  if (scale < 1) {
+    map.style.transform = `scale(${scale})`;
+    map.style.transformOrigin = 'top center';
+    map.style.marginBottom = `-${(1 - scale) * 880}px`;
+  } else {
+    map.style.transform = '';
+    map.style.marginBottom = '';
+  }
+}
+
+window.addEventListener('resize', applyScale);
+</script>
+</body>
+</html>
